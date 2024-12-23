@@ -2,16 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import {
-  ThumbsUp,
-  MapPin,
-  Sword,
-  User,
-  Trash2,
-  UserX,
-  BotOff,
-  Bot,
-} from "lucide-react";
+import { ThumbsUp, MapPin, Sword, User, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";

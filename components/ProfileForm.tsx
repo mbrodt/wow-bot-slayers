@@ -20,7 +20,7 @@ export default function ProfileForm() {
       setUser(user);
 
       if (user) {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("profiles")
           .select("character_name")
           .eq("id", user.id)
@@ -38,7 +38,7 @@ export default function ProfileForm() {
     e.preventDefault();
     if (!user) return;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("profiles")
       .upsert({ id: user.id, character_name: characterName });
 
