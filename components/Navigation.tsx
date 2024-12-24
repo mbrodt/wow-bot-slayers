@@ -9,7 +9,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Auth from "@/components/Auth";
 
 const navItems = [
-  { href: "/", label: "Home" },
   { href: "/submit", label: "Submit Kill" },
   { href: "/leaderboard", label: "Leaderboard" },
 ];

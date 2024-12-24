@@ -162,10 +162,6 @@ export default function BotKillGrid({ showVoting = false }) {
             )}
           </div>
           <div className="p-6 relative">
-            <div className="absolute top-2 right-0 -mt-10 mr-4 bg-yellow-500 text-gray-900 font-wow px-4 py-2 rounded-b-lg shadow-md">
-              <span className="text-2xl font-bold">{kill.votes}</span>
-              <span className="text-sm ml-1">votes</span>
-            </div>
             <h2 className="text-3xl font-bold text-yellow-400 mb-4 font-wow border-b-2 border-yellow-500 pb-2 flex items-center gap-4">
               {kill.bot_name} <Bot className=" h-5 w-5" />
             </h2>
@@ -175,9 +171,9 @@ export default function BotKillGrid({ showVoting = false }) {
                 <MapPin className="mr-2 h-5 w-5" />
                 <span className="font-wow">{kill.zone}</span>
               </div>
-              <div className="flex items-center text-green-400">
-                <User className="mr-2 h-5 w-5" />
+              <div className="flex items-center text-green-400 gap-2">
                 <span className="font-wow">{kill.character_name}</span>
+                <User className="mr-2 h-5 w-5" />
               </div>
             </div>
             {showVoting && (
@@ -194,9 +190,12 @@ export default function BotKillGrid({ showVoting = false }) {
                   <ThumbsUp className="mr-2 h-5 w-5" />
                   {kill.user_has_voted ? "Voted" : "Vote"}
                 </Button>
-                <div className="flex items-center text-yellow-400 font-wow">
+                <div className="flex items-center text-yellow-400 font-wow gap-2">
+                  <div>
+                    <span className="text-2xl font-bold">{kill.votes}</span>
+                    <span className="text-sm ml-1">votes</span>
+                  </div>
                   <Sword className="mr-2 h-6 w-6" />
-                  <span className="text-lg">Bot Slain!</span>
                 </div>
               </div>
             )}
