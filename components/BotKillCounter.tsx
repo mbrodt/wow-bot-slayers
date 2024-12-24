@@ -5,13 +5,10 @@ import { Shield } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 async function fetchTotalBotKills() {
-  console.log("fetch total bot kills");
   const { count, error } = await supabase
     .from("bot_kills")
     .select("*", { count: "exact", head: true });
-  console.log("error:", error);
 
-  console.log("count:", count);
   if (error) {
     console.error("Error fetching bot kills:", error);
     return 0;
@@ -32,7 +29,7 @@ export default function BotKillCounter({ initialValue = 0 }) {
         setIsIncrementing(true);
         setTimeout(() => setIsIncrementing(false), 500);
       });
-    }, 5000); // Update every 5 seconds
+    }, 10000);
 
     return () => clearInterval(timer);
   }, []);

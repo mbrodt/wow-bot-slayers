@@ -22,8 +22,8 @@ export default function Navigation() {
   return (
     <nav className="bg-gray-900 bg-opacity-90 p-4 border-b-2 border-yellow-600">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link href="/" className="text-yellow-400 font-wow text-2xl">
-          WoW Bot Slayer
+        <Link href="/" className="text-yellow-400 font-wow text-lg md:text-2xl">
+          Hardcore Cleaning Crew
         </Link>
         <div className="hidden md:flex items-center space-x-6">
           {navItems.map((item) => (

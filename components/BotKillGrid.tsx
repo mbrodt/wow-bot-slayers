@@ -134,7 +134,7 @@ export default function BotKillGrid({ showVoting = false }) {
       {botKills.map((kill) => (
         <div
           key={kill.id}
-          className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden border-2 border-yellow-500 hover:border-green-400 transition-all duration-300 transform hover:scale-105"
+          className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden border-2 border-yellow-500 hover:border-green-400 transition-all duration-300 transform hover:scale-105 will-change-transform"
         >
           <div className="aspect-video relative">
             {kill.media_type === "image" ? (
@@ -143,6 +143,7 @@ export default function BotKillGrid({ showVoting = false }) {
                 alt={kill.bot_name}
                 fill
                 className="object-cover"
+                sizes="100%"
               />
             ) : kill.media_type === "youtube" ? (
               <iframe
@@ -158,6 +159,7 @@ export default function BotKillGrid({ showVoting = false }) {
                 alt="Placeholder"
                 fill
                 className="object-cover"
+                sizes="100%"
               />
             )}
           </div>

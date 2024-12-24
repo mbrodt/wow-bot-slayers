@@ -5,12 +5,16 @@ import Link from "next/link";
 import { useUser } from "@/hooks/useUser";
 
 export default function Auth() {
-  const { user, signIn, signOut } = useUser();
+  const { user, signIn, signOut, loading } = useUser();
+
+  if (loading) {
+    return null;
+  }
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center space-x-4">
       {user ? (
-        <div className="flex gap-6 justify-between items-center w-full">
+        <>
           <Link
             href="/profile"
             className="text-white hover:text-yellow-400 transition-colors duration-300 font-wow"
@@ -20,7 +24,7 @@ export default function Auth() {
           <Button onClick={signOut} variant="outline" className="font-wow">
             Sign Out
           </Button>
-        </div>
+        </>
       ) : (
         <Button
           onClick={signIn}

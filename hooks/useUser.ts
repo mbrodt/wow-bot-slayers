@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 
 interface Profile {
@@ -11,47 +11,50 @@ interface UserWithProfile extends User {
 }
 
 export function useUser() {
+  const session = useSession();
+  const supabase = useSupabaseClient();
   const [user, setUser] = useState<UserWithProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setLoading(true);
-        setError(null);
+    async function loadUser() {
+      setLoading(true);
+      setError(null);
 
-        if (session?.user) {
-          try {
-            const { data: profile, error: profileError } = await supabase
-              .from("profiles")
-              .select("character_name")
-              .eq("id", session.user.id)
-              .single();
+      try {
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser();
 
-            if (profileError) throw profileError;
+        if (userError) throw userError;
 
-            setUser({ ...session.user, profile });
-          } catch (err) {
-            setError(
-              err instanceof Error
-                ? err
-                : new Error("An unknown error occurred")
-            );
-            setUser(session.user);
-          }
+        if (user) {
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles")
+            .select("character_name")
+            .eq("id", user.id)
+            .single();
+
+          if (profileError) throw profileError;
+
+          setUser({ ...user, profile });
         } else {
           setUser(null);
         }
-
-        setLoading(false);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("An unknown error occurred")
+        );
+        setUser(null);
       }
-    );
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
+      setLoading(false);
+    }
+
+    loadUser();
+  }, [supabase, session]);
 
   const signIn = async () => {
     await supabase.auth.signInWithOAuth({

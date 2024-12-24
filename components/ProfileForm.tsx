@@ -48,7 +48,7 @@ export default function ProfileForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-gray-800 bg-opacity-75 p-6 rounded-lg shadow-lg mb-8"
+      className="bg-gray-800 bg-opacity-75 p-6 rounded-lg shadow-lg mb-8 max-w-2xl mx-auto"
     >
       <div className="mb-4">
         <label
