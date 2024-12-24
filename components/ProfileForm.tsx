@@ -5,34 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/useUser";
 
 export default function ProfileForm() {
   const [characterName, setCharacterName] = useState("");
-  const [user, setUser] = useState(null);
+  const { user } = useUser();
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-
-      if (user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("character_name")
-          .eq("id", user.id)
-          .single();
-
-        if (data) setCharacterName(data.character_name || "");
-      }
-      setIsLoading(false);
-    };
-
-    fetchProfile();
-  }, []);
+    if (user) {
+      setCharacterName(user?.profile?.character_name || "");
+    }
+    setIsLoading(false);
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

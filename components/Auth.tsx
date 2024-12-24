@@ -10,7 +10,7 @@ export default function Auth() {
   return (
     <div className="flex items-center gap-4">
       {user ? (
-        <div className="flex gap-4 justify-between items-center w-full">
+        <div className="flex gap-6 justify-between items-center w-full">
           <Link
             href="/profile"
             className="text-white hover:text-yellow-400 transition-colors duration-300 font-wow"

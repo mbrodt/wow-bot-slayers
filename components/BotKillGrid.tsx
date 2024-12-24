@@ -162,7 +162,7 @@ export default function BotKillGrid({ showVoting = false }) {
             )}
           </div>
           <div className="p-6 relative">
-            <div className="absolute top-4 right-0 -mt-10 mr-4 bg-yellow-500 text-gray-900 font-wow px-4 py-2 rounded-b-lg shadow-md">
+            <div className="absolute top-2 right-0 -mt-10 mr-4 bg-yellow-500 text-gray-900 font-wow px-4 py-2 rounded-b-lg shadow-md">
               <span className="text-2xl font-bold">{kill.votes}</span>
               <span className="text-sm ml-1">votes</span>
             </div>

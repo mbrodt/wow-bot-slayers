@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/useUser";
 
 export default function SubmitForm() {
   const [formData, setFormData] = useState({
@@ -20,35 +21,22 @@ export default function SubmitForm() {
     image: null as File | null,
     youtubeLink: "",
   });
-  const [user, setUser] = useState(null);
+  const { user } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-
-      if (user) {
-        const { data } = await supabase
-          .from("profiles")
-          .select("character_name")
-          .eq("id", user.id)
-          .single();
-
-        if (data && data.character_name) {
-          setFormData((prev) => ({
-            ...prev,
-            character_name: data.character_name,
-          }));
-        }
+    if (user) {
+      const characterName = user?.profile?.character_name;
+      if (characterName) {
+        setFormData((prev) => ({
+          ...prev,
+          character_name: characterName,
+        }));
       }
-    };
-    checkUser();
-  }, []);
+    }
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
