@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Image from "next/image";
 
 const navItems = [
   { href: "/submit", label: "Submit Kill" },
@@ -25,8 +26,20 @@ export default function Navigation({
   return (
     <nav className="bg-gray-900 bg-opacity-90 p-4 border-b-2 border-yellow-600">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <Link href="/" className="text-yellow-400 font-wow text-lg md:text-2xl">
-          Hardcore Cleaning Crew
+        <Link
+          href="/"
+          className="text-yellow-400 font-wow text-lg md:text-2xl flex gap-2 items-center"
+        >
+          <Image
+            src="/logo.webp"
+            className="w-16 md:w-28"
+            alt="Hardcore Cleaning Crew"
+            width={100}
+            height={100}
+          />
+          <span className="mt-2 max-w-[160px] lg:max-w-[60px]">
+            Hardcore Cleaning Crew
+          </span>
         </Link>
         <div className="hidden md:flex items-center space-x-6">
           {navItems.map((item) => (

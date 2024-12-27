@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function ProfileForm({
   initialCharacterName = "",
@@ -16,6 +17,7 @@ export default function ProfileForm({
   const [characterName, setCharacterName] = useState(
     initialCharacterName || ""
   );
+  const router = useRouter();
   const supabase = createClient();
 
   const { toast } = useToast();
@@ -39,6 +41,7 @@ export default function ProfileForm({
         title: "Success",
         description: "Your profile has been updated.",
       });
+      router.push("/");
     }
   };
 
