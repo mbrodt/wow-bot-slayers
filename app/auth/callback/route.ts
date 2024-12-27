@@ -13,6 +13,17 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = await createClient();
     await supabase.auth.exchangeCodeForSession(code);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const profileData = await supabase
+      .from("profiles")
+      .select()
+      .eq("id", user?.id)
+      .maybeSingle();
+    if (!profileData.data.character_name) {
+      return NextResponse.redirect(`${origin}/profile`);
+    }
   }
 
   // URL to redirect to after sign up process completes

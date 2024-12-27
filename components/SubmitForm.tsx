@@ -16,7 +16,6 @@ export default function SubmitForm({ user }) {
     bot_name: "",
     description: "",
     zone: "",
-    character_name: "",
     mediaType: "image",
     image: null as File | null,
     youtubeLink: "",
@@ -25,18 +24,6 @@ export default function SubmitForm({ user }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (user) {
-      const characterName = user?.profile?.character_name;
-      if (characterName) {
-        setFormData((prev) => ({
-          ...prev,
-          character_name: characterName,
-        }));
-      }
-    }
-  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,7 +74,6 @@ export default function SubmitForm({ user }) {
           bot_name: formData.bot_name,
           description: formData.description,
           zone: formData.zone,
-          character_name: formData.character_name,
           media_type: formData.mediaType,
           media_url: mediaUrl,
           user_id: user.id,
@@ -214,22 +200,6 @@ export default function SubmitForm({ user }) {
             id="zone"
             name="zone"
             value={formData.zone}
-            onChange={handleChange}
-            required
-            className="bg-gray-700 text-white"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="character_name"
-            className="block text-sm font-medium text-gray-300 mb-1"
-          >
-            Killer Name
-          </label>
-          <Input
-            id="character_name"
-            name="character_name"
-            value={formData.character_name}
             onChange={handleChange}
             required
             className="bg-gray-700 text-white"

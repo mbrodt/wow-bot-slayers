@@ -14,12 +14,13 @@ interface BotKill {
   media_url: string;
   description: string;
   zone: string;
-  character_name: string;
   votes: number;
+  created_at: string;
   user_has_voted: boolean;
+  profiles?: { character_name?: string } | null;
 }
 
-export default function BotKillGrid({ user }) {
+export default function BotKillGrid({ user }: { user: any }) {
   const supabase = createClient();
   const { toast } = useToast();
   const [botKills, setBotKills] = useState<BotKill[]>([]);
@@ -29,31 +30,58 @@ export default function BotKillGrid({ user }) {
   }, []);
 
   async function fetchBotKills() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const { data, error } = await supabase
-      .from("bot_kills")
-      .select("*")
-      .order("created_at", { ascending: false });
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    if (error) {
-      console.error("Error fetching bot kills:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load bot kills. Please try again.",
-        variant: "destructive",
-      });
-    } else if (data) {
+      const { data, error } = await supabase
+        .from("bot_kills")
+        .select(
+          `
+          id,
+          bot_name,
+          media_type,
+          media_url,
+          description,
+          zone,
+          votes,
+          created_at,
+          profiles (character_name)
+        `
+        )
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching bot kills:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load bot kills. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const botKills = data || [];
+      console.log("botKills:", botKills);
       const userVotes = user ? await fetchUserVotes(user.id) : new Set();
-      const processedData = data.map((kill) => ({
+
+      const processedData = botKills.map((kill) => ({
         ...kill,
         user_has_voted: userVotes.has(kill.id),
         media_url: kill.media_url
           ? convertYouTubeUrl(kill.media_url)
           : "/placeholder.webp",
       }));
+      // @ts-expect-error i dont care
       setBotKills(processedData);
+    } catch (error) {
+      console.error("Error in fetchBotKills:", error);
+      toast({
+        title: "Error",
+        description: "An error occurred while loading bot kills.",
+        variant: "destructive",
+      });
     }
   }
 
@@ -170,7 +198,9 @@ export default function BotKillGrid({ user }) {
                 <span className="font-wow">{kill.zone}</span>
               </div>
               <div className="flex items-center text-green-400 gap-2">
-                <span className="font-wow">{kill.character_name}</span>
+                <span className="font-wow">
+                  {kill.profiles?.character_name}
+                </span>
                 <User className="mr-2 h-5 w-5" />
               </div>
             </div>

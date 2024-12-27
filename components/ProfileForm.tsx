@@ -7,8 +7,9 @@ import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/utils/supabase/client";
 
 export default function ProfileForm({ initialCharacterName = "", user }) {
-  console.log("initialCharacterName:", initialCharacterName);
-  const [characterName, setCharacterName] = useState(initialCharacterName);
+  const [characterName, setCharacterName] = useState(
+    initialCharacterName || ""
+  );
   const supabase = createClient();
 
   const { toast } = useToast();
