@@ -1,7 +1,3 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
 import {
   Table,
   TableBody,
@@ -10,10 +6,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { createClient } from "@/utils/supabase/server";
 
 interface BotKill {
   id: number;
-  user_id: string;
+  character_name: string;
   votes: number;
 }
 
@@ -28,77 +25,60 @@ interface LeaderboardEntry {
   bot_kills: number;
   total_votes: number;
 }
+function createLeaderboard(
+  botKills: BotKill[],
+  profiles: Profile[]
+): LeaderboardEntry[] {
+  const characterMap = new Map<string, LeaderboardEntry>();
 
-export default function Leaderboard() {
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>(
-    []
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchLeaderboardData();
-  }, []);
-
-  async function fetchLeaderboardData() {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const { data: botKills, error: botKillsError } = await supabase
-        .from("bot_kills")
-        .select("id, user_id, votes");
-
-      if (botKillsError) throw botKillsError;
-
-      const { data: profiles, error: profilesError } = await supabase
-        .from("profiles")
-        .select("id, character_name");
-
-      if (profilesError) throw profilesError;
-
-      const leaderboard = createLeaderboard(botKills, profiles);
-      setLeaderboardData(leaderboard);
-    } catch (error) {
-      console.error("Error fetching leaderboard data:", error);
-      setError("Failed to load leaderboard data. Please try again later.");
-    } finally {
-      setIsLoading(false);
+  botKills.forEach((kill) => {
+    if (!characterMap.has(kill.character_name)) {
+      characterMap.set(kill.character_name, {
+        user_id: "",
+        character_name: kill.character_name,
+        bot_kills: 0,
+        total_votes: 0,
+      });
     }
+    const entry = characterMap.get(kill.character_name)!;
+    entry.bot_kills++;
+    entry.total_votes += kill.votes;
+  });
+
+  profiles.forEach((profile) => {
+    if (characterMap.has(profile.character_name)) {
+      characterMap.get(profile.character_name)!.user_id = profile.id;
+    }
+  });
+
+  return Array.from(characterMap.values()).sort(
+    (a, b) => b.bot_kills - a.bot_kills || b.total_votes - a.total_votes
+  );
+}
+
+async function fetchLeaderboardData() {
+  const supabase = await createClient();
+  try {
+    const { data: botKills, error: botKillsError } = await supabase
+      .from("bot_kills")
+      .select("id, character_name, votes");
+    if (botKillsError) throw botKillsError;
+
+    const { data: profiles, error: profilesError } = await supabase
+      .from("profiles")
+      .select("id, character_name");
+
+    if (profilesError) throw profilesError;
+
+    const leaderboard = createLeaderboard(botKills, profiles);
+    return leaderboard;
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
   }
+}
 
-  function createLeaderboard(
-    botKills: BotKill[],
-    profiles: Profile[]
-  ): LeaderboardEntry[] {
-    const userMap = new Map<string, LeaderboardEntry>();
-
-    botKills.forEach((kill) => {
-      if (!userMap.has(kill.user_id)) {
-        userMap.set(kill.user_id, {
-          user_id: kill.user_id,
-          character_name: "Unknown",
-          bot_kills: 0,
-          total_votes: 0,
-        });
-      }
-      const entry = userMap.get(kill.user_id)!;
-      entry.bot_kills++;
-      entry.total_votes += kill.votes;
-    });
-
-    profiles.forEach((profile) => {
-      if (userMap.has(profile.id)) {
-        userMap.get(profile.id)!.character_name = profile.character_name;
-      }
-    });
-
-    return Array.from(userMap.values()).sort(
-      (a, b) => b.bot_kills - a.bot_kills || b.total_votes - a.total_votes
-    );
-  }
-
-  if (isLoading) return <div className="text-center">Loading...</div>;
-  if (error) return <div className="text-center text-red-500">{error}</div>;
+export default async function Leaderboard() {
+  const leaderboardData = (await fetchLeaderboardData()) || [];
 
   return (
     <Table>
@@ -112,7 +92,7 @@ export default function Leaderboard() {
       </TableHeader>
       <TableBody>
         {leaderboardData.map((entry, index) => (
-          <TableRow key={entry.user_id}>
+          <TableRow key={entry.character_name}>
             <TableCell className="font-medium">{index + 1}</TableCell>
             <TableCell>{entry.character_name}</TableCell>
             <TableCell className="text-right">{entry.bot_kills}</TableCell>

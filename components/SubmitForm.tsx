@@ -6,12 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from "@/hooks/useUser";
+import { createClient } from "@/utils/supabase/client";
 
-export default function SubmitForm() {
+export default function SubmitForm({ user }) {
+  const supabase = createClient();
   const [formData, setFormData] = useState({
     bot_name: "",
     description: "",
@@ -21,7 +21,7 @@ export default function SubmitForm() {
     image: null as File | null,
     youtubeLink: "",
   });
-  const { user } = useUser();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -224,7 +224,7 @@ export default function SubmitForm() {
             htmlFor="character_name"
             className="block text-sm font-medium text-gray-300 mb-1"
           >
-            Your Character Name
+            Killer Name
           </label>
           <Input
             id="character_name"

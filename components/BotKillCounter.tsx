@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Shield } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 
 async function fetchTotalBotKills() {
+  const supabase = createClient();
   const { count, error } = await supabase
     .from("bot_kills")
     .select("*", { count: "exact", head: true });

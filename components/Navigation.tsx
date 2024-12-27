@@ -13,7 +13,7 @@ const navItems = [
   { href: "/leaderboard", label: "Leaderboard" },
 ];
 
-export default function Navigation() {
+export default function Navigation({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -37,7 +37,7 @@ export default function Navigation() {
               {item.label}
             </Link>
           ))}
-          <Auth />
+          {children}
         </div>
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild className="md:hidden">
@@ -74,9 +74,7 @@ export default function Navigation() {
                   </Link>
                 ))}
               </nav>
-              <div className="p-4 border-t border-yellow-600">
-                <Auth />
-              </div>
+              <div className="p-4 border-t border-yellow-600">{children}</div>
             </div>
           </SheetContent>
         </Sheet>

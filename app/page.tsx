@@ -1,8 +1,13 @@
 import BotKillCounter from "@/components/BotKillCounter";
 import BotKillGrid from "@/components/BotKillGrid";
 import Footer from "@/components/Footer";
+import { createClient } from "@/utils/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-white">
       <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8">
@@ -11,7 +16,7 @@ export default function Home() {
             Join the Bot-Slaying Movement
           </h1>
           <BotKillCounter />
-          <BotKillGrid showVoting />
+          <BotKillGrid user={user} />
         </div>
       </main>
       <Footer />

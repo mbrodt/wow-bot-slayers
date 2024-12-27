@@ -1,24 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from "@/hooks/useUser";
+import { createClient } from "@/utils/supabase/client";
 
-export default function ProfileForm() {
-  const [characterName, setCharacterName] = useState("");
-  const { user } = useUser();
-  const [isLoading, setIsLoading] = useState(true);
+export default function ProfileForm({ initialCharacterName = "", user }) {
+  console.log("initialCharacterName:", initialCharacterName);
+  const [characterName, setCharacterName] = useState(initialCharacterName);
+  const supabase = createClient();
+
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (user) {
-      setCharacterName(user?.profile?.character_name || "");
-    }
-    setIsLoading(false);
-  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +35,6 @@ export default function ProfileForm() {
     }
   };
 
-  if (isLoading) return <div>Loading...</div>;
   if (!user) return <div>Please log in to view your profile.</div>;
 
   return (

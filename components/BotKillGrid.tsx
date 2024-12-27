@@ -4,9 +4,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ThumbsUp, MapPin, Sword, User, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { useUser } from "@/hooks/useUser";
+import { createClient } from "@/utils/supabase/client";
 
 interface BotKill {
   id: number;
@@ -20,16 +19,19 @@ interface BotKill {
   user_has_voted: boolean;
 }
 
-export default function BotKillGrid({ showVoting = false }) {
+export default function BotKillGrid({ user }) {
+  const supabase = createClient();
   const { toast } = useToast();
   const [botKills, setBotKills] = useState<BotKill[]>([]);
-  const { user, loading } = useUser();
 
   useEffect(() => {
     fetchBotKills();
-  }, [user]);
+  }, []);
 
   async function fetchBotKills() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { data, error } = await supabase
       .from("bot_kills")
       .select("*")
@@ -70,6 +72,9 @@ export default function BotKillGrid({ showVoting = false }) {
   }
 
   const handleVote = async (id: number) => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       toast({
         title: "Authentication required",
@@ -95,11 +100,6 @@ export default function BotKillGrid({ showVoting = false }) {
               : kill
           )
         );
-        toast({
-          title: "Vote recorded",
-          description: "Your vote has been successfully recorded.",
-          variant: "default",
-        });
       } else {
         toast({
           title: "Already voted",
@@ -124,10 +124,6 @@ export default function BotKillGrid({ showVoting = false }) {
     }
     return url;
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
@@ -178,29 +174,28 @@ export default function BotKillGrid({ showVoting = false }) {
                 <User className="mr-2 h-5 w-5" />
               </div>
             </div>
-            {showVoting && (
-              <div className="mt-4 flex items-center justify-between">
-                <Button
-                  onClick={() => handleVote(kill.id)}
-                  className={`${
-                    kill.user_has_voted
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-blue-500 hover:bg-blue-600"
-                  } text-white font-wow flex items-center px-6 py-3 rounded-full transition-colors duration-300`}
-                  disabled={!user || kill.user_has_voted}
-                >
-                  <ThumbsUp className="mr-2 h-5 w-5" />
-                  {kill.user_has_voted ? "Voted" : "Vote"}
-                </Button>
-                <div className="flex items-center text-yellow-400 font-wow gap-2">
-                  <div>
-                    <span className="text-2xl font-bold">{kill.votes}</span>
-                    <span className="text-sm ml-1">votes</span>
-                  </div>
-                  <Sword className="mr-2 h-6 w-6" />
+
+            <div className="mt-4 flex items-center justify-between">
+              <Button
+                onClick={() => handleVote(kill.id)}
+                className={`${
+                  kill.user_has_voted
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-blue-500 hover:bg-blue-600"
+                } text-white font-wow flex items-center px-6 py-3 rounded-full transition-colors duration-300`}
+                disabled={!user || kill.user_has_voted}
+              >
+                <ThumbsUp className="mr-2 h-5 w-5" />
+                {kill.user_has_voted ? "Voted" : "Vote"}
+              </Button>
+              <div className="flex items-center text-yellow-400 font-wow gap-2">
+                <div>
+                  <span className="text-2xl font-bold">{kill.votes}</span>
+                  <span className="text-sm ml-1">votes</span>
                 </div>
+                <Sword className="mr-2 h-6 w-6" />
               </div>
-            )}
+            </div>
           </div>
         </div>
       ))}

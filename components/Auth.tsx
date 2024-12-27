@@ -1,15 +1,13 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useUser } from "@/hooks/useUser";
+import { createClient } from "@/utils/supabase/server";
+import SignOutButton from "./SignOutButton";
+import SignInButton from "./SignInButton";
 
-export default function Auth() {
-  const { user, signIn, signOut, loading } = useUser();
-
-  if (loading) {
-    return null;
-  }
+export default async function Auth() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <div className="flex items-center space-x-4">
@@ -21,17 +19,10 @@ export default function Auth() {
           >
             Profile
           </Link>
-          <Button onClick={signOut} variant="outline" className="font-wow">
-            Sign Out
-          </Button>
+          <SignOutButton />
         </>
       ) : (
-        <Button
-          onClick={signIn}
-          className="bg-[#5865F2] hover:bg-[#4752C4] text-white font-wow"
-        >
-          Sign in with Discord
-        </Button>
+        <SignInButton />
       )}
     </div>
   );
