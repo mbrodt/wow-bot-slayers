@@ -9,9 +9,12 @@ function SignOutButton() {
     await supabase.auth.signOut();
     window.location.reload();
   };
-
   return (
-    <Button onClick={signOut} variant="outline" className="font-wow">
+    <Button
+      onClick={signOut}
+      variant="outline"
+      className="font-wow md:text-base"
+    >
       Sign Out
     </Button>
   );

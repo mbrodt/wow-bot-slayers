@@ -2,10 +2,25 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ThumbsUp, MapPin, Sword, User, Bot } from "lucide-react";
+import {
+  ThumbsUp,
+  MapPin,
+  Sword,
+  User,
+  Bot,
+  SortAsc,
+  SortDesc,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/utils/supabase/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface BotKill {
   id: number;
@@ -20,14 +35,18 @@ interface BotKill {
   profiles?: { character_name?: string } | null;
 }
 
+type SortOption = "recent" | "votes";
+
 export default function BotKillGrid({ user }: { user: any }) {
   const supabase = createClient();
   const { toast } = useToast();
   const [botKills, setBotKills] = useState<BotKill[]>([]);
+  const [sortBy, setSortBy] = useState<SortOption>("recent");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
     fetchBotKills();
-  }, []);
+  }, [sortBy, sortOrder]);
 
   async function fetchBotKills() {
     try {
@@ -35,10 +54,8 @@ export default function BotKillGrid({ user }: { user: any }) {
         data: { user },
       } = await supabase.auth.getUser();
 
-      const { data, error } = await supabase
-        .from("bot_kills")
-        .select(
-          `
+      let query = supabase.from("bot_kills").select(
+        `
           id,
           bot_name,
           media_type,
@@ -49,8 +66,15 @@ export default function BotKillGrid({ user }: { user: any }) {
           created_at,
           profiles (character_name)
         `
-        )
-        .order("created_at", { ascending: false });
+      );
+
+      if (sortBy === "recent") {
+        query = query.order("created_at", { ascending: sortOrder === "asc" });
+      } else if (sortBy === "votes") {
+        query = query.order("votes", { ascending: sortOrder === "asc" });
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error("Error fetching bot kills:", error);
@@ -153,82 +177,105 @@ export default function BotKillGrid({ user }: { user: any }) {
     return url;
   };
 
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
-      {botKills.map((kill) => (
-        <div
-          key={kill.id}
-          className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden border-2 border-yellow-500 hover:border-green-400 transition-all duration-300 transform hover:scale-105 will-change-transform"
-        >
-          <div className="aspect-video relative">
-            {kill.media_type === "image" ? (
-              <Image
-                src={kill.media_url}
-                alt={kill.bot_name}
-                fill
-                className="object-cover"
-                sizes="100%"
-              />
-            ) : kill.media_type === "youtube" ? (
-              <iframe
-                src={kill.media_url}
-                title={kill.bot_name}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
-            ) : (
-              <Image
-                src="/placeholder.webp"
-                alt="Placeholder"
-                fill
-                className="object-cover"
-                sizes="100%"
-              />
-            )}
-          </div>
-          <div className="p-6 relative">
-            <h2 className="text-3xl font-bold text-yellow-400 mb-4 font-wow border-b-2 border-yellow-500 pb-2 flex items-center gap-4">
-              {kill.bot_name} <Bot className=" h-5 w-5" />
-            </h2>
-            <p className="text-gray-300 mb-4 italic">{kill.description}</p>
-            <div className="flex justify-between gap-4 mb-4">
-              <div className="flex items-center text-blue-400">
-                <MapPin className="mr-2 h-5 w-5" />
-                <span className="font-wow">{kill.zone}</span>
-              </div>
-              <div className="flex items-center text-green-400 gap-2">
-                <span className="font-wow">
-                  {kill.profiles?.character_name}
-                </span>
-                <User className="mr-2 h-5 w-5" />
-              </div>
-            </div>
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
 
-            <div className="mt-4 flex items-center justify-between">
-              <Button
-                onClick={() => handleVote(kill.id)}
-                className={`${
-                  kill.user_has_voted
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-blue-500 hover:bg-blue-600"
-                } text-white font-wow flex items-center px-6 py-3 rounded-full transition-colors duration-300`}
-                disabled={!user || kill.user_has_voted}
-              >
-                <ThumbsUp className="mr-2 h-5 w-5" />
-                {kill.user_has_voted ? "Voted" : "Vote"}
-              </Button>
-              <div className="flex items-center text-yellow-400 font-wow gap-2">
-                <div>
-                  <span className="text-2xl font-bold">{kill.votes}</span>
-                  <span className="text-sm ml-1">votes</span>
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <Select
+          value={sortBy}
+          onValueChange={(value: SortOption) => setSortBy(value)}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="recent">Most Recent</SelectItem>
+            <SelectItem value="votes">Most Votes</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button onClick={toggleSortOrder} variant="default">
+          {sortOrder === "asc" ? <SortAsc /> : <SortDesc />}
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-12">
+        {botKills.map((kill) => (
+          <div
+            key={kill.id}
+            className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden border-2 border-yellow-500 hover:border-green-400 transition-all duration-300 transform hover:scale-105 will-change-transform"
+          >
+            <div className="aspect-video relative">
+              {kill.media_type === "image" ? (
+                <Image
+                  src={kill.media_url}
+                  alt={kill.bot_name}
+                  fill
+                  className="object-cover"
+                  sizes="100%"
+                />
+              ) : kill.media_type === "youtube" ? (
+                <iframe
+                  src={kill.media_url}
+                  title={kill.bot_name}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              ) : (
+                <Image
+                  src="/placeholder.webp"
+                  alt="Placeholder"
+                  fill
+                  className="object-cover"
+                  sizes="100%"
+                />
+              )}
+            </div>
+            <div className="p-6 relative">
+              <h2 className="text-3xl font-bold text-yellow-400 mb-4 font-wow border-b-2 border-yellow-500 pb-2 flex items-center gap-4">
+                {kill.bot_name} <Bot className=" h-5 w-5" />
+              </h2>
+              <p className="text-gray-300 mb-4 italic">{kill.description}</p>
+              <div className="flex justify-between gap-4 mb-4">
+                <div className="flex items-center text-blue-400">
+                  <MapPin className="mr-2 h-5 w-5" />
+                  <span className="font-wow">{kill.zone}</span>
                 </div>
-                <Sword className="mr-2 h-6 w-6" />
+                <div className="flex items-center text-green-400 gap-2">
+                  <span className="font-wow">
+                    {kill.profiles?.character_name}
+                  </span>
+                  <User className="mr-2 h-5 w-5" />
+                </div>
+              </div>
+
+              <div className="mt-4 flex items-center justify-between">
+                <Button
+                  onClick={() => handleVote(kill.id)}
+                  className={`${
+                    kill.user_has_voted
+                      ? "bg-green-600 hover:bg-green-700"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  } text-white font-wow flex items-center px-6 py-3 rounded-full transition-colors duration-300`}
+                  disabled={!user || kill.user_has_voted}
+                >
+                  <ThumbsUp className="mr-2 h-5 w-5" />
+                  {kill.user_has_voted ? "Voted" : "Vote"}
+                </Button>
+                <div className="flex items-center text-yellow-400 font-wow gap-2">
+                  <div>
+                    <span className="text-2xl font-bold">{kill.votes}</span>
+                    <span className="text-sm ml-1">votes</span>
+                  </div>
+                  <Sword className="mr-2 h-6 w-6" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

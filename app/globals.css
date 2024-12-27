@@ -1,14 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .font-wow {
-  font-family: 'Cinzel', serif;
+  font-family: "Cinzel", serif;
 }
 
 body {
   @apply bg-gray-900 text-white;
 }
-
