@@ -6,14 +6,17 @@ import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import Auth from "@/components/Auth";
 
 const navItems = [
   { href: "/submit", label: "Submit Kill" },
   { href: "/leaderboard", label: "Leaderboard" },
 ];
 
-export default function Navigation({ children }) {
+export default function Navigation({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
