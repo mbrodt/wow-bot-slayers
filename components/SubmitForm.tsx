@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/utils/supabase/client";
 
-export default function SubmitForm({ user }) {
+export default function SubmitForm({ user }: { user: any }) {
   const supabase = createClient();
   const [formData, setFormData] = useState({
     bot_name: "",

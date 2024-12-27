@@ -6,7 +6,13 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/utils/supabase/client";
 
-export default function ProfileForm({ initialCharacterName = "", user }) {
+export default function ProfileForm({
+  initialCharacterName = "",
+  user,
+}: {
+  initialCharacterName: string;
+  user: any;
+}) {
   const [characterName, setCharacterName] = useState(
     initialCharacterName || ""
   );
