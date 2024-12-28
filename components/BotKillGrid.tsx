@@ -238,9 +238,14 @@ export default function BotKillGrid({ user }: { user: any }) {
               )}
             </div>
             <div className="p-6 relative">
-              <h2 className="text-3xl font-bold text-yellow-400 mb-4 font-wow border-b-2 border-yellow-500 pb-2 flex items-center gap-4">
-                {kill.bot_name} (Lvl {kill.bot_level}){" "}
-                <Bot className=" h-5 w-5" />
+              <h2 className="text-2xl xl:text-3xl font-bold text-yellow-400 mb-4 font-wow border-b-2 border-yellow-500 pb-2  gap-4">
+                <span>
+                  {kill.bot_name}{" "}
+                  <span className="text-lg">
+                    (Lvl {kill.bot_level}
+                    <Bot className="inline ml-1 -mt-1 h-5 w-5" />)
+                  </span>
+                </span>
               </h2>
               <p className="text-gray-300 mb-4 italic">{kill.description}</p>
               <div className="flex justify-between gap-4 mb-4">
