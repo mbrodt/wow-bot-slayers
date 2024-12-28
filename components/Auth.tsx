@@ -10,7 +10,7 @@ export default async function Auth() {
   } = await supabase.auth.getUser();
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-6">
       {user ? (
         <>
           <Link

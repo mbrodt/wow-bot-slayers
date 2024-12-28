@@ -5,7 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+
 import Image from "next/image";
 
 const navItems = [
@@ -70,6 +77,10 @@ export default function Navigation({
             side="right"
             className="w-[300px] sm:w-[400px] bg-gray-900 border-l-2 border-yellow-600 p-0"
           >
+            <VisuallyHidden.Root>
+              <SheetTitle>Menu</SheetTitle>
+            </VisuallyHidden.Root>
+
             <div className="flex flex-col h-full">
               <div className="flex justify-between items-center p-4 border-b border-yellow-600">
                 <span className="text-2xl font-wow text-yellow-400">Menu</span>

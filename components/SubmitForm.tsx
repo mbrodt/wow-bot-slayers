@@ -9,6 +9,14 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/utils/supabase/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 
 export default function SubmitForm({ user }: { user: any }) {
   const supabase = createClient();
@@ -19,6 +27,8 @@ export default function SubmitForm({ user }: { user: any }) {
     mediaType: "image",
     image: null as File | null,
     youtubeLink: "",
+    bot_level: 1,
+    server_region: "EU",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,6 +87,8 @@ export default function SubmitForm({ user }: { user: any }) {
           media_type: formData.mediaType,
           media_url: mediaUrl,
           user_id: user.id,
+          bot_level: formData.bot_level,
+          server_region: formData.server_region,
         },
       ]);
 
@@ -87,7 +99,8 @@ export default function SubmitForm({ user }: { user: any }) {
 
       toast({
         title: "Success!",
-        description: "Bot kill submitted successfully",
+        description:
+          "Your kill has been submitted. It's now awaiting approval before it'll show up on the Wall of Slain.",
       });
 
       // Reset form after submission
@@ -99,6 +112,8 @@ export default function SubmitForm({ user }: { user: any }) {
         mediaType: "image",
         image: null,
         youtubeLink: "",
+        bot_level: 1,
+        server_region: "EU",
       }));
     } catch (error) {
       console.error(error);
@@ -196,14 +211,106 @@ export default function SubmitForm({ user }: { user: any }) {
           >
             Zone
           </label>
-          <Input
-            id="zone"
-            name="zone"
+          <Select
             value={formData.zone}
-            onChange={handleChange}
-            required
-            className="bg-gray-700 text-white"
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, zone: value }))
+            }
+          >
+            <SelectTrigger className="bg-gray-700 text-white">
+              <SelectValue placeholder="Select a zone" />
+            </SelectTrigger>
+            <SelectContent>
+              {[
+                "Alterac Mountains",
+                "Arathi Highlands",
+                "Ashenvale",
+                "Azshara",
+                "Badlands",
+                "Barrens",
+                "Blasted Lands",
+                "Burning Steppes",
+                "Darkshore",
+                "Deadwind Pass",
+                "Desolace",
+                "Dustwallow Marsh",
+                "Dun Morogh",
+                "Durotar",
+                "Duskwood",
+                "Eastern Plaguelands",
+                "Elwynn Forest",
+                "Feralas",
+                "Felwood",
+                "Hillsbrad Foothills",
+                "Hinterlands",
+                "Loch Modan",
+                "Moonglade",
+                "Mulgore",
+                "Redridge Mountains",
+                "Searing Gorge",
+                "Silithus",
+                "Silverpine Forest",
+                "Stonetalon Mountains",
+                "Stranglethorn Vale",
+                "Swamp of Sorrows",
+                "Tanaris",
+                "Teldrassil",
+                "Thousand Needles",
+                "Tirisfal Glades",
+                "Un'Goro Crater",
+                "Western Plaguelands",
+                "Westfall",
+                "Wetlands",
+                "Winterspring",
+              ].map((zone) => (
+                <SelectItem key={zone} value={zone}>
+                  {zone}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label
+            htmlFor="bot_level"
+            className="block text-sm font-medium text-gray-300 mb-1"
+          >
+            Bot Level
+          </label>
+          <Slider
+            id="bot_level"
+            min={1}
+            max={60}
+            step={1}
+            value={[formData.bot_level]}
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, bot_level: value[0] }))
+            }
+            className="w-full"
           />
+          <span className="text-sm text-gray-400 mt-1">
+            Level: {formData.bot_level}
+          </span>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">
+            Region
+          </label>
+          <RadioGroup
+            value={formData.server_region}
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, server_region: value }))
+            }
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="EU" id="eu" />
+              <Label htmlFor="eu">EU (Soulseeker)</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="NA" id="na" />
+              <Label htmlFor="na">NA (Doomhowl)</Label>
+            </div>
+          </RadioGroup>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-1">

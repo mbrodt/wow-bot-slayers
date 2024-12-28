@@ -1,6 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
+// List of admin user IDs (Madsen, Hardz)
+const ADMIN_USER_IDS = [
+  "f39af20b-df28-47d8-aeff-d17fd704fd2d",
+  "6eec63ea-cb86-4b41-bde3-600f007066c6",
+];
+
 export const updateSession = async (request: NextRequest) => {
   // This `try/catch` block is only here for the interactive tutorial.
   // Feel free to remove once you have Supabase connected.
@@ -37,8 +43,17 @@ export const updateSession = async (request: NextRequest) => {
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    const user = await supabase.auth.getUser();
-    console.log("user in middleware:", user);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    // Check if the request is for the admin page
+    if (request.nextUrl.pathname === "/admin") {
+      if (!user || !ADMIN_USER_IDS.includes(user.id)) {
+        // If the user is not an admin, redirect to the homepage
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+    }
 
     console.log("returning response:");
     return response;

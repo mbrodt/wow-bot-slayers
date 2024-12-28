@@ -8,7 +8,8 @@ async function fetchTotalBotKills() {
   const supabase = createClient();
   const { count, error } = await supabase
     .from("bot_kills")
-    .select("*", { count: "exact", head: true });
+    .select("*", { count: "exact", head: true })
+    .eq("is_approved", true);
 
   if (error) {
     console.error("Error fetching bot kills:", error);
@@ -59,11 +60,11 @@ export default function BotKillCounter({ initialValue = 0 }) {
         <div className="mt-4 h-2 bg-gray-700 rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-green-400 to-blue-500 transition-all duration-300 ease-in-out"
-            style={{ width: `${Math.min((count / 500) * 100, 100)}%` }}
+            style={{ width: `${Math.min((count / 2000) * 100, 100)}%` }}
           ></div>
         </div>
         <p className="mt-2 text-sm text-blue-300 font-wow">
-          Progress: {count}/500 (Stretch Goal)
+          Progress: {count}/2000 (One full server of bots)
         </p>
       </div>
     </div>

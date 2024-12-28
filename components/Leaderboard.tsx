@@ -65,15 +65,14 @@ async function fetchLeaderboardData(): Promise<LeaderboardEntry[]> {
   try {
     const { data: botKills, error: botKillsError } = await supabase
       .from("bot_kills")
-      .select("id, user_id, votes");
-    console.log("botKills:", botKills);
+      .select("id, user_id, votes")
+      .eq("is_approved", true);
     if (botKillsError) throw botKillsError;
 
     const { data: profiles, error: profilesError } = await supabase
       .from("profiles")
       .select("id, character_name");
     if (profilesError) throw profilesError;
-    console.log("profiles:", profiles);
 
     const leaderboard = createLeaderboard(botKills || [], profiles || []);
     return leaderboard;

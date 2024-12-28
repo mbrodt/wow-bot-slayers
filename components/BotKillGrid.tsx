@@ -32,6 +32,7 @@ interface BotKill {
   votes: number;
   created_at: string;
   user_has_voted: boolean;
+  bot_level: number;
   profiles?: { character_name?: string } | null;
 }
 
@@ -54,8 +55,10 @@ export default function BotKillGrid({ user }: { user: any }) {
         data: { user },
       } = await supabase.auth.getUser();
 
-      let query = supabase.from("bot_kills").select(
-        `
+      let query = supabase
+        .from("bot_kills")
+        .select(
+          `
           id,
           bot_name,
           media_type,
@@ -64,9 +67,11 @@ export default function BotKillGrid({ user }: { user: any }) {
           zone,
           votes,
           created_at,
+          bot_level,
           profiles (character_name)
         `
-      );
+        )
+        .eq("is_approved", true);
 
       if (sortBy === "recent") {
         query = query.order("created_at", { ascending: sortOrder === "asc" });
@@ -87,7 +92,6 @@ export default function BotKillGrid({ user }: { user: any }) {
       }
 
       const botKills = data || [];
-      console.log("botKills:", botKills);
       const userVotes = user ? await fetchUserVotes(user.id) : new Set();
 
       const processedData = botKills.map((kill) => ({
@@ -235,7 +239,8 @@ export default function BotKillGrid({ user }: { user: any }) {
             </div>
             <div className="p-6 relative">
               <h2 className="text-3xl font-bold text-yellow-400 mb-4 font-wow border-b-2 border-yellow-500 pb-2 flex items-center gap-4">
-                {kill.bot_name} <Bot className=" h-5 w-5" />
+                {kill.bot_name} (Lvl {kill.bot_level}){" "}
+                <Bot className=" h-5 w-5" />
               </h2>
               <p className="text-gray-300 mb-4 italic">{kill.description}</p>
               <div className="flex justify-between gap-4 mb-4">
