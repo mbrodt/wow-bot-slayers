@@ -97,24 +97,7 @@ export default function SubmitForm({ user }: { user: any }) {
         throw new Error(`Error submitting bot kill: ${error.message}`);
       }
 
-      toast({
-        title: "Success!",
-        description:
-          "Your kill has been submitted. It's now awaiting approval before it'll show up on the Wall of Slain.",
-      });
-
-      // Reset form after submission
-      setFormData((prev) => ({
-        ...prev,
-        bot_name: "",
-        description: "",
-        zone: "",
-        mediaType: "image",
-        image: null,
-        youtubeLink: "",
-        bot_level: 1,
-        server_region: "EU",
-      }));
+      router.push("/submit-success?level=" + formData.bot_level);
     } catch (error) {
       console.error(error);
       toast({

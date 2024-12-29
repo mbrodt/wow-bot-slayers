@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Navigation from "@/components/Navigation";
 import Auth from "@/components/Auth";
 
-const url = "https://wow-bot-slayer.vercel.app";
+const url = "https://cleanthebots.com";
 
 export const metadata: Metadata = {
   title: {
