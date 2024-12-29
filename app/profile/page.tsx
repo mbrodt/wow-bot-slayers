@@ -1,6 +1,10 @@
 import ProfileForm from "@/components/ProfileForm";
 import { createClient } from "@/utils/supabase/server";
 
+export const metadata = {
+  title: "Profile",
+};
+
 export default async function ProfilePage() {
   const supabase = await createClient();
   const {

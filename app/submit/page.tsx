@@ -2,6 +2,10 @@ import SubmitForm from "@/components/SubmitForm";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
 
+export const metadata = {
+  title: "Submit kill",
+};
+
 export default async function SubmitPage() {
   const supabase = await createClient();
   const {
