@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Shield, Clock, DollarSign, Coins } from "lucide-react";
+import { Shield } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { BotSetbackResult, calculateTotalBotSetback } from "@/lib/utils";
 import { BotKill } from "./BotKillGrid";
