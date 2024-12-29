@@ -55,7 +55,6 @@ export const updateSession = async (request: NextRequest) => {
       }
     }
 
-    console.log("returning response:");
     return response;
   } catch (e) {
     console.log("e:", e);

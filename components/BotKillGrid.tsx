@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface BotKill {
+export interface BotKill {
   id: number;
   bot_name: string;
   media_type: "image" | "youtube";
@@ -208,7 +208,7 @@ export default function BotKillGrid({ user }: { user: any }) {
         {botKills.map((kill) => (
           <div
             key={kill.id}
-            className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden border-2 border-yellow-500 hover:border-green-400 transition-all duration-300 transform hover:scale-105 will-change-transform"
+            className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden border-2 border-yellow-500 hover:border-green-400 transition-all duration-300 transform flex flex-col"
           >
             <div className="aspect-video relative">
               {kill.media_type === "image" ? (
@@ -221,6 +221,7 @@ export default function BotKillGrid({ user }: { user: any }) {
                 />
               ) : kill.media_type === "youtube" ? (
                 <iframe
+                  loading="lazy"
                   src={kill.media_url}
                   title={kill.bot_name}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -237,7 +238,7 @@ export default function BotKillGrid({ user }: { user: any }) {
                 />
               )}
             </div>
-            <div className="p-6 relative">
+            <div className="p-6 relative flex flex-grow flex-col">
               <h2 className="text-2xl xl:text-3xl font-bold text-yellow-400 mb-4 font-wow border-b-2 border-yellow-500 pb-2  gap-4">
                 <span>
                   {kill.bot_name}{" "}
