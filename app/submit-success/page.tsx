@@ -179,6 +179,10 @@ function SubmitSuccess() {
             <p className="text-2xl font-wow text-green-400">
               The Alliance and Horde salute you, hero!
             </p>
+            <p className="mt-4 text-lg text-blue-300 px-16">
+              Your kill will show up on the Wall of Slain and in the Leaderboard
+              once it has been approved by an admin
+            </p>
             <Button
               asChild
               className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-wow"
