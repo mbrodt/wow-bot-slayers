@@ -248,8 +248,10 @@ export default function BotKillGrid({ user }: { user: any }) {
                   </span>
                 </span>
               </h2>
-              <p className="text-gray-300 mb-4 italic">{kill.description}</p>
-              <div className="flex justify-between gap-4 mb-4">
+              <p className="text-gray-300 mb-4 italic flex-grow">
+                {kill.description}
+              </p>
+              <div className="flex justify-between gap-4 items-end">
                 <div className="flex items-center text-blue-400">
                   <MapPin className="mr-2 h-5 w-5" />
                   <span className="font-wow">{kill.zone}</span>
