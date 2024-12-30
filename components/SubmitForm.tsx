@@ -287,11 +287,11 @@ export default function SubmitForm({ user }: { user: any }) {
           >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="EU" id="eu" />
-              <Label htmlFor="eu">EU (Soulseeker)</Label>
+              <Label htmlFor="eu">EU (Soulseeker, Stitches)</Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="NA" id="na" />
-              <Label htmlFor="na">NA (Doomhowl)</Label>
+              <Label htmlFor="na">NA (Doomhowl, Nekrosh)</Label>
             </div>
           </RadioGroup>
         </div>

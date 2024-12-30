@@ -13,7 +13,7 @@ export default async function Home() {
       <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold text-center text-yellow-400 mb-8 font-wow">
-            Join the Bot-Slaying Movement
+            Join The Bot-Slaying Movement
           </h1>
           <BotKillCounter />
           <BotKillGrid user={user} />
