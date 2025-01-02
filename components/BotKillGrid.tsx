@@ -212,13 +212,7 @@ export default function BotKillGrid({ user }: { user: any }) {
           >
             <div className="aspect-video relative">
               {kill.media_type === "image" ? (
-                <Image
-                  src={kill.media_url}
-                  alt={kill.bot_name}
-                  fill
-                  className="object-cover"
-                  sizes="100%"
-                />
+                <img src={kill.media_url} alt={kill.bot_name} />
               ) : kill.media_type === "youtube" ? (
                 <iframe
                   loading="lazy"
@@ -229,13 +223,7 @@ export default function BotKillGrid({ user }: { user: any }) {
                   className="w-full h-full"
                 />
               ) : (
-                <Image
-                  src="/placeholder.webp"
-                  alt="Placeholder"
-                  fill
-                  className="object-cover"
-                  sizes="100%"
-                />
+                <img src="/placeholder.webp" alt="Placeholder" />
               )}
             </div>
             <div className="p-6 relative flex flex-grow flex-col">

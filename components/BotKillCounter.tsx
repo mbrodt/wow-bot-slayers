@@ -90,9 +90,11 @@ export default function BotKillCounter({ initialValue = 0 }) {
         </p>
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-gray-800 p-4 rounded-lg">
-            <div className="relative aspect-video mb-4 max-w-[10rem] md:max-w-[16rem] mx-auto">
-              <Image src="/clock.png" alt="Hours setback" fill />
-            </div>
+            <img
+              src="/clock.png"
+              alt="Hours setback"
+              className="relative aspect-video mb-4 max-w-[10rem] md:max-w-[16rem] mx-auto"
+            />
 
             <p className="text-2xl font-bold text-yellow-400 font-wow">
               {totalBotSetback.timeSetBackHours.toLocaleString()}
@@ -100,9 +102,11 @@ export default function BotKillCounter({ initialValue = 0 }) {
             <p className="text-sm text-blue-300">Hours Set Back</p>
           </div>
           <div className="bg-gray-800 p-4 rounded-lg">
-            <div className="relative aspect-video mb-4 max-w-[10rem] md:max-w-[16rem] mx-auto">
-              <Image src="/dollars.png" alt="Dollar setback" fill />
-            </div>
+            <img
+              src="/dollars.png"
+              alt="Dollar setback"
+              className="relative aspect-video mb-4 max-w-[10rem] md:max-w-[16rem] mx-auto"
+            />
 
             <p className="text-2xl font-bold text-yellow-400 font-wow">
               ${totalBotSetback.dollarSetBack.toLocaleString()}
@@ -111,7 +115,11 @@ export default function BotKillCounter({ initialValue = 0 }) {
           </div>
           <div className="bg-gray-800 p-4 rounded-lg">
             <div className="relative aspect-video mb-4 max-w-[10rem] md:max-w-[16rem] mx-auto">
-              <Image src="/gold.png" alt="Gold setback" fill />
+              <img
+                src="/gold.png"
+                alt="Gold setback"
+                className="relative aspect-video mb-4 max-w-[10rem] md:max-w-[16rem] mx-auto"
+              />
             </div>
 
             <p className="text-2xl font-bold text-yellow-400 font-wow">
