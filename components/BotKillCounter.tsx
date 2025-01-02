@@ -5,7 +5,6 @@ import { Shield } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { BotSetbackResult, calculateTotalBotSetback } from "@/lib/utils";
 import { BotKill } from "./BotKillGrid";
-import Image from "next/image";
 async function fetchTotalBotKills() {
   const supabase = createClient();
   const { error, data } = await supabase
