@@ -60,6 +60,7 @@ export default function BotKillGrid() {
   );
 
   // 1) Derive kills with processed media URLs
+  // @ts-expect-error - queryBotKills is possibly undefined
   const processedBotKills = useMemo<BotKillT[]>(() => {
     if (!queryBotKills) return [];
 
@@ -137,7 +138,10 @@ export default function BotKillGrid() {
     <div>
       {/* Sort Controls */}
       <div className="flex justify-between items-center mb-6">
-        <Select value={sortBy} onValueChange={setSortBy}>
+        <Select
+          value={sortBy}
+          onValueChange={(value: SortOption) => setSortBy(value)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>

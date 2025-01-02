@@ -4,15 +4,9 @@ import useUser from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/utils/supabase/client";
 import type { BotKillT } from "./BotKillGrid";
-import { Dispatch, SetStateAction } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-function BotKill({
-  kill,
-}: {
-  kill: BotKillT;
-  setBotKills: Dispatch<SetStateAction<BotKillT[]>>;
-}) {
+function BotKill({ kill }: { kill: BotKillT }) {
   const supabase = createClient();
   const queryClient = useQueryClient();
 

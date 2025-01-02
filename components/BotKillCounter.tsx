@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Shield } from "lucide-react";
 import { BotSetbackResult, calculateTotalBotSetback } from "@/lib/utils";
 import useBotKills from "@/hooks/use-bot-kills";
+import { BotKillT } from "./BotKillGrid";
 
 export default function BotKillCounter({ initialValue = 0 }) {
   const [count, setCount] = useState(initialValue);
@@ -18,7 +19,7 @@ export default function BotKillCounter({ initialValue = 0 }) {
   useEffect(() => {
     const count = botKills?.length || 0;
     if (botKills) {
-      const totalBotSetback = calculateTotalBotSetback(botKills);
+      const totalBotSetback = calculateTotalBotSetback(botKills as BotKillT[]);
       setCount(count);
       setTotalBotSetback(totalBotSetback);
     }

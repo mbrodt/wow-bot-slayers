@@ -1,4 +1,4 @@
-import { BotKill } from "@/components/BotKillGrid";
+import { BotKillT } from "@/components/BotKillGrid";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -105,7 +105,7 @@ export function calculateBotSetback(
   };
 }
 
-export function calculateTotalBotSetback(botKills: BotKill[]) {
+export function calculateTotalBotSetback(botKills: BotKillT[]) {
   return botKills.reduce(
     (acc, kill) => {
       const result = calculateBotSetback(kill.bot_level);
