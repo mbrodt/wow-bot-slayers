@@ -7,7 +7,6 @@ function SignInButton() {
 
   const signIn = async () => {
     const redirectTo = `${window.location.origin}/auth/callback`;
-    console.log("redirectTo:", redirectTo);
     await supabase.auth.signInWithOAuth({
       provider: "discord",
       options: {

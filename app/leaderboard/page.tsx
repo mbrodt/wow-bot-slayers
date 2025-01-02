@@ -4,6 +4,8 @@ export const metadata = {
   title: "Leaderboard",
 };
 
+export const dynamic = "force-static";
+
 export default function LeaderboardPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-white">

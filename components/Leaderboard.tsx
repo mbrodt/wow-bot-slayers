@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -6,7 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 interface BotKill {
   id: number;
@@ -82,8 +84,11 @@ async function fetchLeaderboardData(): Promise<LeaderboardEntry[]> {
   }
 }
 
-export default async function Leaderboard() {
-  const leaderboardData = (await fetchLeaderboardData()) || [];
+export default function Leaderboard() {
+  const { data: leaderboardData } = useQuery({
+    queryKey: ["leaderboard"],
+    queryFn: fetchLeaderboardData,
+  });
 
   return (
     <Table>
@@ -96,14 +101,15 @@ export default async function Leaderboard() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {leaderboardData.map((entry, index) => (
-          <TableRow key={entry.user_id}>
-            <TableCell className="font-medium">{index + 1}</TableCell>
-            <TableCell>{entry.character_name}</TableCell>
-            <TableCell className="text-right">{entry.bot_kills}</TableCell>
-            <TableCell className="text-right">{entry.total_votes}</TableCell>
-          </TableRow>
-        ))}
+        {leaderboardData &&
+          leaderboardData.map((entry, index) => (
+            <TableRow key={entry.user_id}>
+              <TableCell className="font-medium">{index + 1}</TableCell>
+              <TableCell>{entry.character_name}</TableCell>
+              <TableCell className="text-right">{entry.bot_kills}</TableCell>
+              <TableCell className="text-right">{entry.total_votes}</TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </Table>
   );

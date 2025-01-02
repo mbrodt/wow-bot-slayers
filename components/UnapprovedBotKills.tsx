@@ -40,7 +40,6 @@ export default function UnapprovedBotKills() {
         `
       )
       .is("is_approved", null);
-    console.log("data:", data);
 
     if (error) {
       console.error("Error fetching unapproved kills:", error);

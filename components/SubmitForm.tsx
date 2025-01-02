@@ -17,8 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import useUser from "@/hooks/use-user";
 
-export default function SubmitForm({ user }: { user: any }) {
+export default function SubmitForm() {
   const supabase = createClient();
   const [formData, setFormData] = useState({
     bot_name: "",
@@ -30,6 +31,7 @@ export default function SubmitForm({ user }: { user: any }) {
     bot_level: 1,
     server_region: "EU",
   });
+  const { data: user } = useUser();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();

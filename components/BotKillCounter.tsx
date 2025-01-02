@@ -2,37 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Shield } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
 import { BotSetbackResult, calculateTotalBotSetback } from "@/lib/utils";
-import { BotKill } from "./BotKillGrid";
-async function fetchTotalBotKills() {
-  const supabase = createClient();
-  const { error, data } = await supabase
-    .from("bot_kills")
-    .select("*")
-    .eq("is_approved", true);
-
-  const count = data?.length || 0;
-  const totalBotSetback = calculateTotalBotSetback(data as BotKill[]);
-  console.log("totalBotSetback:", totalBotSetback);
-
-  if (error) {
-    console.error("Error fetching bot kills:", error);
-    return {
-      count: 0,
-      totalBotSetback: {
-        timeSetBackHours: 0,
-        dollarSetBack: 0,
-        goldSetBack: 0,
-      },
-    };
-  }
-  return { count, totalBotSetback };
-}
+import useBotKills from "@/hooks/use-bot-kills";
 
 export default function BotKillCounter({ initialValue = 0 }) {
   const [count, setCount] = useState(initialValue);
   const [isIncrementing, setIsIncrementing] = useState(false);
+  const { data: botKills, error } = useBotKills();
   const [totalBotSetback, setTotalBotSetback] = useState<BotSetbackResult>({
     timeSetBackHours: 0,
     dollarSetBack: 0,
@@ -40,22 +16,26 @@ export default function BotKillCounter({ initialValue = 0 }) {
   });
 
   useEffect(() => {
-    fetchTotalBotKills().then(({ count, totalBotSetback }) => {
+    const count = botKills?.length || 0;
+    if (botKills) {
+      // @ts-expect-error i dont care
+      const totalBotSetback = calculateTotalBotSetback(botKills);
       setCount(count);
       setTotalBotSetback(totalBotSetback);
-    });
+    }
 
     const timer = setInterval(() => {
-      fetchTotalBotKills().then(({ count, totalBotSetback }) => {
-        setCount(count);
-        setTotalBotSetback(totalBotSetback);
-        setIsIncrementing(true);
-        setTimeout(() => setIsIncrementing(false), 500);
-      });
+      setIsIncrementing(true);
+      setTimeout(() => setIsIncrementing(false), 500);
     }, 10000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [botKills]);
+
+  if (error) {
+    console.error("Error fetching bot kills:", error);
+    return null;
+  }
 
   return (
     <div className="text-center mb-16 relative">

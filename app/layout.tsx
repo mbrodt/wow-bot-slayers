@@ -4,6 +4,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { Toaster } from "@/components/ui/toaster";
 import Navigation from "@/components/Navigation";
 import Auth from "@/components/Auth";
+import Providers from "./providers";
 
 const url = "https://cleanthebots.com";
 
@@ -41,13 +42,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ToastProvider>
-          <Navigation>
-            <Auth />
-          </Navigation>
-          {children}
-          <Toaster />
-        </ToastProvider>
+        <Providers>
+          <ToastProvider>
+            <Navigation>
+              <Auth />
+            </Navigation>
+            {children}
+            <Toaster />
+          </ToastProvider>
+        </Providers>
         <script
           defer
           src="https://cloud.umami.is/script.js"
