@@ -35,14 +35,6 @@ type SortOption = "recent" | "votes";
 
 const KILLS_PER_PAGE = 18;
 
-function convertYouTubeUrl(url: string): string {
-  if (url.includes("youtube.com") || url.includes("youtu.be")) {
-    const videoId = url.split("v=")[1] || url.split("/").pop();
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-  return url;
-}
-
 export default function BotKillGrid() {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,9 +58,7 @@ export default function BotKillGrid() {
 
     return queryBotKills.map((kill) => ({
       ...kill,
-      media_url: kill.media_url
-        ? convertYouTubeUrl(kill.media_url)
-        : "/placeholder.webp",
+      media_url: kill.media_url ? kill.media_url : "/placeholder.webp",
     }));
   }, [queryBotKills]);
 
@@ -102,6 +92,7 @@ export default function BotKillGrid() {
         return sortOrder === "asc" ? a.votes - b.votes : b.votes - a.votes;
       }
     });
+    setCurrentPage(1);
     return kills;
   }, [killsWithUserVote, sortBy, sortOrder]);
 

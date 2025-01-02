@@ -1,4 +1,5 @@
-import { Bot, MapPin, Sword, ThumbsUp, User } from "lucide-react";
+import { useState } from "react";
+import { Bot, MapPin, Sword, ThumbsUp, User, Play } from "lucide-react";
 import { Button } from "./ui/button";
 import useUser from "@/hooks/use-user";
 import { useToast } from "@/hooks/use-toast";
@@ -7,6 +8,7 @@ import type { BotKillT } from "./BotKillGrid";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function BotKill({ kill }: { kill: BotKillT }) {
+  const [showVideo, setShowVideo] = useState(false);
   const supabase = createClient();
   const queryClient = useQueryClient();
 
@@ -31,10 +33,10 @@ function BotKill({ kill }: { kill: BotKillT }) {
           title: "Authentication required",
           description: "Please log in to vote.",
         });
+        return;
       }
 
       if (data === false) {
-        // The server said user already voted (data === false)
         toast({
           title: "Already voted",
           description: "You have already voted for this bot kill.",
@@ -43,7 +45,6 @@ function BotKill({ kill }: { kill: BotKillT }) {
         return;
       }
 
-      // Here we avoid re-fetching and just patch local cache:
       queryClient.setQueryData<BotKillT[]>(["bot-kills"], (oldKills) => {
         if (!oldKills) return [];
 
@@ -70,25 +71,65 @@ function BotKill({ kill }: { kill: BotKillT }) {
     },
   });
 
+  const getYouTubeVideoId = (url: string) => {
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return match && match[2].length === 11 ? match[2] : null;
+  };
+
+  const videoId =
+    kill.media_type === "youtube" ? getYouTubeVideoId(kill.media_url) : null;
+  const thumbnailUrl = videoId
+    ? `https://img.youtube.com/vi/${videoId}/0.jpg`
+    : null;
+
   return (
     <div
       key={kill.id}
       className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg shadow-lg overflow-hidden border-2 border-yellow-500 hover:border-green-400 transition-all duration-300 transform flex flex-col"
     >
-      <div className="aspect-video relative">
+      <div className="relative" style={{ paddingTop: "56.25%" }}>
         {kill.media_type === "image" ? (
-          <img src={kill.media_url} alt={kill.bot_name} />
-        ) : kill.media_type === "youtube" ? (
-          <iframe
-            loading="lazy"
+          <img
             src={kill.media_url}
-            title={kill.bot_name}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full"
+            alt={kill.bot_name}
+            className="absolute top-0 left-0 w-full h-full object-cover"
+            loading="lazy"
           />
+        ) : kill.media_type === "youtube" ? (
+          showVideo ? (
+            <iframe
+              src={`${kill.media_url}?autoplay=1`}
+              title={kill.bot_name}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute top-0 left-0 w-full h-full"
+            />
+          ) : (
+            <button
+              className="absolute top-0 left-0 w-full h-full"
+              onClick={() => setShowVideo(true)}
+            >
+              <img
+                src={thumbnailUrl || "/placeholder.webp"}
+                alt={kill.bot_name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="bg-black bg-opacity-60 rounded-full p-4">
+                  <Play className="size-10 text-white" />
+                </div>
+              </div>
+            </button>
+          )
         ) : (
-          <img src="/placeholder.webp" alt="Placeholder" />
+          <img
+            src="/placeholder.webp"
+            alt="Placeholder"
+            className="absolute top-0 left-0 w-full h-full object-cover"
+          />
         )}
       </div>
       <div className="p-6 relative flex flex-grow flex-col">

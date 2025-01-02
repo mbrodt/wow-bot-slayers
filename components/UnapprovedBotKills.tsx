@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 interface BotKill {
   id: number;
   bot_name: string;
+  bot_level: number;
   description: string;
   zone: string;
   is_approved: boolean | null;
@@ -31,6 +32,7 @@ export default function UnapprovedBotKills() {
         `
           id,
           bot_name,
+          bot_level,
           media_type,
           media_url,
           description,
@@ -96,6 +98,7 @@ export default function UnapprovedBotKills() {
                 <h2 className="text-xl font-semibold">{kill.bot_name}</h2>
 
                 <p className="text-gray-400">{kill.description}</p>
+                <p className="text-yellow-500">{kill.bot_level}</p>
                 <p className="text-sm text-blue-400">Zone: {kill.zone}</p>
                 <p className="text-green-400">
                   Slain by {kill.profiles?.character_name}
