@@ -18,7 +18,6 @@ export default function BotKillCounter({ initialValue = 0 }) {
   useEffect(() => {
     const count = botKills?.length || 0;
     if (botKills) {
-      // @ts-expect-error i dont care
       const totalBotSetback = calculateTotalBotSetback(botKills);
       setCount(count);
       setTotalBotSetback(totalBotSetback);
